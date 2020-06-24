@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Avenir&display=swap');
+body {
+	-webkit-text-size-adjust:none;
+	font-family: Avenir ! important;
+}
+.active-marker h1 {
+    font-size: 15px;
+}
+.active-marker {
+	min-width: 150px;
+}
+.active-marker label {
+	font-size: 13px;
+	color: black;
+	font-weight: bold;
+}
+.active-marker img {
+	width: 25px;
+	height: 25px;
+	margin-right: 10px;
+}
+.active-marker> :first-child {
+	display: flex;
+	align-items: center;
+}
+.statistics {
+	width: 30%;
+	float: right;
+	position: relative;
+}
+.statistics-body {
+	padding: 10px 15px;
+}
+.statistics h4 {
+	width: 100px;
+	margin: unset !important;
+	margin-right: 10px;
+}
+.date-picker-area {
+	display: flex;
+	align-items: center;
+}
+.sta-btn {
+	background: #13b5c7;
+	border-radius: 10px;
+	color: white;
+	padding: 10px;
+	text-align: center;
+	font-size: 15px;
+	font-weight: bold;
+	border: 1px solid #13b5c7;
+	box-shadow: 0 0 3px grey;
+	margin-top: 20px;
+	cursor: pointer !important;
+}
+.sta-btn:active {
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 2px rgba(0, 0, 0, 0.19);
+    border-bottom: none;
+}
+.sta-btn:focus {
+	outline: none;
+}
