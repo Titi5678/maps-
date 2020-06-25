@@ -24,12 +24,15 @@ body {
 	align-items: center;
 }
 .statistics {
-	width: 30%;
+	width: 45%;
 	float: right;
 	position: relative;
 }
 .statistics-body {
 	padding: 10px 15px;
+}
+.search-wrapper {
+	margin-left: 30px;
 }
 .statistics h4 {
 	width: 100px;
@@ -59,4 +62,47 @@ body {
 }
 .sta-btn:focus {
 	outline: none;
+}
+.chart-area .y-axis {
+	margin-top: 10px !important;
+}
+.diagram {
+	margin: 20px 10px 0 5px;
+	display: inline-block;
+}
+.diagram table {
+	padding: 5px;
+	border-collapse: collapse;
+}
+.diagram td {
+	border: 1px solid black;
+	padding: 6px;
+	max-width: 50px !important;
+	text-align: center;
+}
+.district-field td {
+	cursor: pointer;
+	padding: 8px 3px !important;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.diagram tr:nth-child(1) td {
+	background: #196f3d;
+}
+.diagram tr:nth-child(2) td {
+	background: #a93226;
+}
+.diagram tr:nth-child(3) td {
+	background: #839192;
+}
+.diagram tr:nth-child(4) td {
+	background: #d35400;
+}
+.diagram tr:nth-child(5) td {
+	background: #a9cce3;
+}
+.y-title {
+	border: none !important;
+	background: unset !important;
 }

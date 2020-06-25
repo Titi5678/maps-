@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { compose  } from 'redux';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
-import BarChart from 'react-bar-chart';
- 
 import "react-datepicker/dist/react-datepicker.css";
 
 // google map
@@ -18,12 +16,11 @@ import UnfallImage from '../images/Unfall.png';
 // import css
 import './style.css';
 
+// map size
 const mapStyles = {
-    width: '70%',
+    width: '55%',
     height: '100%',
 };
-
-const margin = {top: 40, right: 20, bottom: 30, left: 60};
 
 class TrafficGoogle extends Component {
     constructor(props) {
@@ -45,20 +42,234 @@ class TrafficGoogle extends Component {
             fromDate: new Date(),
             toDate: new Date(),
             width: 350,
-            statisticsData: [
-                { text: 'Total-Statistics', value: 1000 },
-                { text: 'Searched-Statistics', value: 0 }
-            ]
+            statisticsData: null
         };
     }
 
     componentWillMount () {
+        console.log('---------------', this.props.mapData.mapData);
+        let oneday = 24 * 60 * 60;
+        // regex for each district
+        var regexList = ["Schöneberg", "Pankow", "Neukölln", "Kreuzberg", "Mitte", "Friedrichshain", "Charlottenburg", "Wilmersdorf", "Lichtenberg", "Reinickendorf", "Tempelhof", "Steglitz", "Zehlendorf", "Köpenick", "Treptow", "Marzahn", "Hellersdorf", "Spandau"];
+
+        // basic data for each statistics
+        var numberList = {
+            Mitte: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Kreuzberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Pankow: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Charlottenburg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Lichtenberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Reinickendorf: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Schöneberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Neukölln: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Steglitz: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Köpenick: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Marzahn: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Spandau: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            }
+        };
+
+        // search statistics data from the back-end
+        this.props.mapData.mapData.map(item => {
+            regexList.map(searchValue => {
+                let regex = new RegExp('^' + searchValue + '|' + searchValue + '.|.' + searchValue, 'i');
+                let timeStamp = ((moment(item.validities[0].timeTo) - moment(item.validities[0].timeFrom)) / oneday).toFixed();
+                if (regex.test(item.street[0])) {
+                    switch (searchValue) {
+                    case "Friedrichshain":
+                        numberList["Kreuzberg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Kreuzberg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Kreuzberg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Kreuzberg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Kreuzberg"]["8"] += 1;
+                        } else {
+                            numberList["Kreuzberg"]["16"] += 1;
+                        }
+                        break;
+                    case "Wilmersdorf":
+                        numberList["Charlottenburg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Charlottenburg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Charlottenburg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Charlottenburg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Charlottenburg"]["8"] += 1;
+                        } else {
+                            numberList["Charlottenburg"]["16"] += 1;
+                        }
+                        break;
+                    case "Tempelhof":
+                        numberList["Schöneberg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Schöneberg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Schöneberg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Schöneberg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Schöneberg"]["8"] += 1;
+                        } else {
+                            numberList["Schöneberg"]["16"] += 1;
+                        }
+                        break;
+                    case "Zehlendorf":
+                        numberList["Steglitz"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Steglitz"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Steglitz"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Steglitz"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Steglitz"]["8"] += 1;
+                        } else {
+                            numberList["Steglitz"]["16"] += 1;
+                        }
+                        break;
+                    case "Treptow":
+                        numberList["Köpenick"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Köpenick"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Köpenick"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Köpenick"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Köpenick"]["8"] += 1;
+                        } else {
+                            numberList["Köpenick"]["16"] += 1;
+                        }
+                        break;
+                    case "Hellersdorf":
+                        numberList["Marzahn"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Marzahn"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Marzahn"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Marzahn"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Marzahn"]["8"] += 1;
+                        } else {
+                            numberList["Marzahn"]["16"] += 1;
+                        }
+                        break;
+                    default:
+                        numberList[searchValue].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList[searchValue]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList[searchValue]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList[searchValue]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList[searchValue]["8"] += 1;
+                        } else {
+                            numberList[searchValue]["16"] += 1;
+                        }
+                        break;
+                    }
+                }
+            });
+        });
+
         this.setState({
             data: this.props.mapData.mapData,
-            sourceData: this.props.mapData.mapData
+            sourceData: this.props.mapData.mapData,
+            statisticsData: numberList
         });
     }
 
+    // show modal for detail of each point
     onMarkerClick (props, marker, e) {
         this.setState({
             activeMarker: marker,
@@ -67,6 +278,7 @@ class TrafficGoogle extends Component {
         });
     }
 
+    // close modal of each point
     onMapClicked (props) {
         if (this.state.showingInfoWindow) {
             this.setState({
@@ -76,40 +288,297 @@ class TrafficGoogle extends Component {
         }
     };
 
+    // statistics and data searching with "from time" and "to time"
     onStatistics() {
-        // filter by period
-        var statistics_count = 0;
+        let oneday = 24 * 60 * 60;
+        // regex for each district
+        var regexList = ["Schöneberg", "Pankow", "Neukölln", "Kreuzberg", "Mitte", "Friedrichshain", "Charlottenburg", "Wilmersdorf", "Lichtenberg", "Reinickendorf", "Tempelhof", "Steglitz", "Zehlendorf", "Köpenick", "Treptow", "Marzahn", "Hellersdorf", "Spandau"];
+
+        // basic data for each statistics
+        var numberList = {
+            Mitte: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Kreuzberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Pankow: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Charlottenburg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Lichtenberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Reinickendorf: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Schöneberg: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Neukölln: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Steglitz: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Köpenick: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Marzahn: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            },
+            Spandau: {
+                total: 0,
+                "16": 0,
+                "8": 0,
+                "4": 0,
+                "2": 0,
+                "0": 0,
+            }
+        };
+
+        // new searched map Data
         var newMapData = [];
+
+        // search map data with "from time" and "to time"
         this.state.sourceData.map(item => {
             if ((moment(item.validities[0].timeFrom).toDate() >= moment(this.state.fromDate).toDate()) && (moment(item.validities[0].timeTo).toDate() <= moment(this.state.toDate).toDate())) {
-                statistics_count += 1;
                 newMapData.push(item);
+                regexList.map(searchValue => {
+                let regex = new RegExp('^' + searchValue + '|' + searchValue + '.|.' + searchValue, 'i');
+                let timeStamp = ((moment(item.validities[0].timeTo) - moment(item.validities[0].timeFrom)) / oneday).toFixed();
+                if (regex.test(item.street[0])) {
+                    switch (searchValue) {
+                    case "Friedrichshain":
+                        numberList["Kreuzberg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Kreuzberg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Kreuzberg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Kreuzberg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Kreuzberg"]["8"] += 1;
+                        } else {
+                            numberList["Kreuzberg"]["16"] += 1;
+                        }
+                        break;
+                    case "Wilmersdorf":
+                        numberList["Charlottenburg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Charlottenburg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Charlottenburg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Charlottenburg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Charlottenburg"]["8"] += 1;
+                        } else {
+                            numberList["Charlottenburg"]["16"] += 1;
+                        }
+                        break;
+                    case "Tempelhof":
+                        numberList["Schöneberg"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Schöneberg"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Schöneberg"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Schöneberg"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Schöneberg"]["8"] += 1;
+                        } else {
+                            numberList["Schöneberg"]["16"] += 1;
+                        }
+                        break;
+                    case "Zehlendorf":
+                        numberList["Steglitz"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Steglitz"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Steglitz"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Steglitz"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Steglitz"]["8"] += 1;
+                        } else {
+                            numberList["Steglitz"]["16"] += 1;
+                        }
+                        break;
+                    case "Treptow":
+                        numberList["Köpenick"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Köpenick"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Köpenick"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Köpenick"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Köpenick"]["8"] += 1;
+                        } else {
+                            numberList["Köpenick"]["16"] += 1;
+                        }
+                        break;
+                    case "Hellersdorf":
+                        numberList["Marzahn"].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList["Marzahn"]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList["Marzahn"]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList["Marzahn"]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList["Marzahn"]["8"] += 1;
+                        } else {
+                            numberList["Marzahn"]["16"] += 1;
+                        }
+                        break;
+                    default:
+                        numberList[searchValue].total += 1;
+                        if (timeStamp >= 0 && timeStamp < 2) {
+                            numberList[searchValue]["0"] += 1;
+                        } else if (timeStamp >=2 && timeStamp < 4) {
+                            numberList[searchValue]["2"] += 1;
+                        } else if (timeStamp >= 4 && timeStamp < 8) {
+                            numberList[searchValue]["4"] += 1;
+                        } else if (timeStamp >= 8 && timeStamp < 16) {
+                            numberList[searchValue]["8"] += 1;
+                        } else {
+                            numberList[searchValue]["16"] += 1;
+                        }
+                        break;
+                    }
+                }
+            });
             }
         });
 
+        // save map data and statistics data
         this.setState({
-            data: newMapData
-        });
-
-        this.setState(prevState => {
-            let statisticsData = Object.assign({}, prevState.statisticsData);
-            statisticsData[1].value = statistics_count;
-            return [ statisticsData ];
+            data: newMapData,
+            statisticsData: numberList
         });
     }
 
+    // from time for Statistics
     handleChangeFrom = date => {
         this.setState({
             fromDate: date
         });
     };
 
+    // to time for Statistics
     handleChangeTo = date => {
         this.setState({
             toDate: date
         });
     };
 
+    displayStatistic = () => {
+        // value list for y-scale
+        let recurringList = [
+            {
+                title: "> 16",
+                value: "16"
+            },
+            {
+                title: "8 - 16",
+                value: "8"
+            },
+            {
+                title: "4 - 8",
+                value: "4"
+            },
+            {
+                title: "2 - 4",
+                value: "2"
+            },
+            {
+                title: "0 - 2",
+                value: "0"
+            },
+        ];
+
+        // return stastistic table
+        return recurringList.map(list => {
+            return (
+                <tr>
+                    <td className="y-title">{ list.title }</td>
+                    <td>{ ((this.state.statisticsData["Mitte"][list.value] / this.state.statisticsData["Mitte"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Kreuzberg"][list.value] / this.state.statisticsData["Kreuzberg"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Pankow"][list.value] / this.state.statisticsData["Pankow"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Charlottenburg"][list.value] / this.state.statisticsData["Charlottenburg"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Spandau"][list.value] / this.state.statisticsData["Spandau"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Steglitz"][list.value] / this.state.statisticsData["Steglitz"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Schöneberg"][list.value] / this.state.statisticsData["Schöneberg"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Neukölln"][list.value] / this.state.statisticsData["Neukölln"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Köpenick"][list.value] / this.state.statisticsData["Köpenick"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Marzahn"][list.value] / this.state.statisticsData["Marzahn"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Lichtenberg"][list.value] / this.state.statisticsData["Lichtenberg"].total) * 100).toFixed() + "%" }</td>
+                    <td>{ ((this.state.statisticsData["Reinickendorf"][list.value] / this.state.statisticsData["Reinickendorf"].total) * 100).toFixed() + "%" }</td>
+                </tr>
+            )
+        });
+    };
+
+    // display Markers for each points on the map
     displayMarkers = () => {
         if (this.state.data !== null) {
             return this.state.data.map((store, index) => {
@@ -173,7 +642,7 @@ class TrafficGoogle extends Component {
                             (this.state.selectedMarker) ?
                             <div className="active-marker">
                                 <div>
-                                    <img src={this.state.selectedMarker.name === "Sperrung" ? SperrungImage : (this.state.selectedMarker.name === "Baustelle" ? BaustelleImage : UnfallImage)} />
+                                    <img src={this.state.selectedMarker.name === "Sperrung" ? SperrungImage : (this.state.selectedMarker.name === "Baustelle" ? BaustelleImage : UnfallImage)} alt="" />
                                     <label>{this.state.selectedMarker.name}</label>
                                 </div>
                                 <p>{this.state.selectedMarker.description}</p>
@@ -196,38 +665,54 @@ class TrafficGoogle extends Component {
 
                 <div className="statistics">
                     <div className="statistics-body">
-                        <h1>Select the Period</h1>
-                        <div>
-                            <div className="date-picker-area">
-                                <h4>From Date</h4>
-                                <DatePicker
-                                    selected={this.state.fromDate}
-                                    onChange={this.handleChangeFrom}
-                                />
+                        <div className="search-wrapper">
+                            <h1>Select the Period</h1>
+                            <div>
+                                <div className="date-picker-area">
+                                    <h4>From Date</h4>
+                                    <DatePicker
+                                        selected={this.state.fromDate}
+                                        onChange={this.handleChangeFrom}
+                                    />
+                                </div>
+                                <br></br>
+                                <div className="date-picker-area">
+                                    <h4>To Date</h4>
+                                    <DatePicker
+                                        selected={this.state.toDate}
+                                        onChange={this.handleChangeTo}
+                                    />
+                                </div>
                             </div>
-                            <br></br>
-                            <div className="date-picker-area">
-                                <h4>To Date</h4>
-                                <DatePicker
-                                    selected={this.state.toDate}
-                                    onChange={this.handleChangeTo}
-                                />
-                            </div>
-                        </div>
 
-                        <input
-                            type="button"
-                            className="sta-btn"
-                            onClick={this.onStatistics}
-                            value="Statistics Period"
-                        />
-                        <div style={{ color: 'red' }}>
-                            <BarChart
-                                width={this.state.width}
-                                height={400}
-                                margin={margin}
-                                color="red"
-                                data={this.state.statisticsData}/>
+                            <input
+                                type="button"
+                                className="sta-btn"
+                                onClick={this.onStatistics}
+                                value="Statistics Period"
+                            />
+                        </div>
+                        <div className="diagram">
+                            <table>
+                                <tbody>
+                                    {this.displayStatistic()}
+                                    <tr className="district-field">
+                                        <td className="y-title" title="Districts">Districts</td>
+                                        <td title="Mitte">Mitte</td>
+                                        <td title="Friedrichshain-kreuzberg">Friedrichshain-kreuzberg</td>
+                                        <td title="pankow">pankow</td>
+                                        <td title="Charlottenburg-wilmehsdorf">Charlottenburg-wilmehsdorf</td>
+                                        <td title="spandau">spandau</td>
+                                        <td title="steglitz-zehlendorf">steglitz-zehlendorf</td>
+                                        <td title="Tempelhof-Schöneberg">Tempelhof-Schöneberg</td>
+                                        <td title="Neukölln">Neukölln</td>
+                                        <td title="Treptow-köpenick">Treptow-köpenick</td>
+                                        <td title="marzahn-hellersdorf">marzahn-hellersdorf</td>
+                                        <td title="Lichtenberg">Lichtenberg</td>
+                                        <td title="reinickendorf">reinickendorf</td>
+                                    </tr>
+                                 </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

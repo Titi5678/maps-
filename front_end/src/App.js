@@ -9,10 +9,6 @@ import TrafficGoogle from './components/TrafficGoogle';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-  }
 
   componentWillMount () {
       // get all map data
